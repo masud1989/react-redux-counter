@@ -1,6 +1,7 @@
 // import React from 'react';
 import { connect } from 'react-redux';
 import { decrement, increment } from '../redux/counter/actions';
+import { decrement as dynamicDecrement, increment as dynamicIncrement } from '../redux/dynamicCounter/actions';
 
 const Counter = ({ count, increment, decrement, id }) => {
     return (
@@ -8,7 +9,7 @@ const Counter = ({ count, increment, decrement, id }) => {
             <div
                 className="p-4 h-auto flex flex-col items-center justify-center space-y-5 bg-white rounded shadow"
             >
-                <div className="text-3xl font-semibold">{count} --- {id}</div>
+                <div className="text-3xl font-semibold">Variable Count : {count}</div>
                     <div className="flex space-x-3">
                         <button
                             className="bg-indigo-400 text-white px-3 py-2 rounded shadow"
@@ -30,14 +31,20 @@ const Counter = ({ count, increment, decrement, id }) => {
 // export default Counter;
 const mapStateToProps = (state, ownProps) =>{
     return{
-        count: state.value,
+        count: ownProps.dynamic 
+            ? state.dynamicCounter.value 
+            : state.counter.value,
     }
 }
 
-const mapDispatchToProps = (dispatch) =>{
+const mapDispatchToProps = (dispatch, ownProps) =>{
     return{
-        increment: (value)=> dispatch(increment(value)),
-        decrement: (value)=> dispatch(decrement(value)),
+        increment: ownProps.dynamic 
+            ? (value)=> dispatch(dynamicIncrement(5)) 
+            : () => dispatch(increment()),
+        decrement: ownProps.dynamic 
+            ? (value)=> dispatch(dynamicDecrement(2))
+            : () => dispatch(decrement()),
     }
 }
 
